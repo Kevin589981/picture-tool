@@ -24,7 +24,7 @@ jobs:
       - name: Install buildozer & kivy-ios & cython
         run: |
             pip install --upgrade pip
-            pip install buildozer kivy-ios cython
+            pip install buildozer kivy-ios cython packaging
 
       - name: Build iOS package
         run: |
