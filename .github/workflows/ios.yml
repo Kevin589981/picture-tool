@@ -26,6 +26,10 @@ jobs:
             pip install --upgrade pip
             pip install buildozer kivy-ios cython packaging plyer
 
+      - name: Create Xcode project
+        run: |
+          buildozer ios update
+
       - name: Build iOS package
         run: |
           buildozer ios debug
