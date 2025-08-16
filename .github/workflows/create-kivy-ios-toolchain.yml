@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           brew install --quiet autoconf automake libtool pkg-config
-          pip install buildozer kivy-ios cython
+          pip install buildozer kivy-ios cython packaging plyer
 
       - name: Build kivy-ios toolchain
         run: |

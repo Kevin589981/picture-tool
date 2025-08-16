@@ -35,8 +35,8 @@ jobs:
           curl -L https://github.com/${{ github.repository }}/releases/download/ios-toolchain/kivy-ios.tar.gz \
             | tar -xz -C ~/.buildozer/ios/platform
 
-      - name: Create Xcode project
-        run: buildozer ios update
+    #   - name: Create Xcode project
+    #     run: buildozer ios update
 
       - name: Build iOS package
         run: buildozer ios debug --no-debug
