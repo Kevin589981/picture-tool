@@ -1,4 +1,4 @@
-name: Build iOS IPA (unsigned)
+name: Build iOS IPA (unsigned, fast)
 
 on:
   push:
@@ -7,32 +7,39 @@ on:
 
 jobs:
   ios:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+          cache: 'pip'
+
+      - name: Cache brew
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/Homebrew
+            ~/Library/Caches/Homebrew
+          key: brew-${{ runner.os }}-${{ hashFiles('.github/workflows/ios.yml') }}
 
       - name: Install system dependencies
         run: |
-            brew update
-            brew install autoconf automake libtool pkg-config
-  
-      - name: Install buildozer & kivy-ios & cython
+          brew install --quiet autoconf automake libtool pkg-config
+          pip install buildozer cython packaging plyer   # 不再装 kivy-ios
+
+      - name: Download prebuilt kivy-ios
         run: |
-            pip install --upgrade pip
-            pip install buildozer kivy-ios cython packaging plyer
+          mkdir -p ~/.buildozer/ios/platform
+          curl -L https://github.com/${{ github.repository }}/releases/download/ios-toolchain/kivy-ios.tar.gz \
+            | tar -xz -C ~/.buildozer/ios/platform
 
       - name: Create Xcode project
-        run: |
-          buildozer ios update
+        run: buildozer ios update
 
       - name: Build iOS package
-        run: |
-          buildozer ios debug
+        run: buildozer ios debug --no-debug
 
       - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
